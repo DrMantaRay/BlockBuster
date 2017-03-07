@@ -1,0 +1,140 @@
+package com.drmantaray.blockbuster;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Rectangle;
+
+import javax.xml.soap.Text;
+import java.util.ArrayList;
+import java.util.Arrays;
+
+/**
+ * Created by pchen on 3/1/2017.
+ */
+public class GameScreen implements Screen {
+    private ArrayList<GameObject> gameObjectArrayList;
+    final BlockBuster game;
+    private OrthographicCamera camera;
+    private GameVaus rectPlayer1;
+    private GameVaus rectPlayer2;
+    private GameObject ball1;
+    private GameObject ball2;
+    private AssetManager manager;
+    private boolean ballIsDropped;
+    public GameScreen(final BlockBuster gam) {
+        this.game = gam;
+        gameObjectArrayList = new ArrayList<GameObject>();
+
+        camera = new OrthographicCamera();
+        camera.setToOrtho(false, 480, 560);
+        camera.update();
+
+        manager = new AssetManager();
+        manager.load("rectPlayer1.png", Texture.class);
+        manager.load("rectPlayer2.png", Texture.class);
+        manager.load("redBall.png", Texture.class);
+        manager.load("blueBall.png", Texture.class);
+        manager.load("WallTile.png", Texture.class);
+
+        manager.finishLoading();
+
+        rectPlayer1 = new GameVaus(manager.get("rectPlayer1.png", Texture.class));
+        rectPlayer1.setCenter(480 / 2 - rectPlayer1.getWidth()/4, 20);
+        rectPlayer1.setAlpha((float)1);
+
+        rectPlayer2 = new GameVaus(manager.get("rectPlayer2.png", Texture.class));
+        rectPlayer2.setCenter(480 / 2 + rectPlayer2.getWidth()/4, 20);
+        rectPlayer2.setAlpha((float) 0.5);
+
+        ball1 = new GameBall(manager.get("redBall.png", Texture.class));
+        ball1.setPosition(rectPlayer1.getX() + rectPlayer1.getWidth() / 2 - ball1.getWidth() / 2,
+                rectPlayer1.getY() + rectPlayer1.getHeight());
+        ball1.setScale(0.5f);
+
+        ball2 = new GameBall(manager.get("blueBall.png", Texture.class));
+        ball2.setPosition(rectPlayer2.getX() + rectPlayer2.getWidth() / 2 - ball2.getWidth() / 2,
+                rectPlayer2.getY() + rectPlayer2.getHeight());
+        ball2.setScale(0.5f);
+
+        gameObjectArrayList.addAll(Arrays.asList(rectPlayer1, rectPlayer2, ball1, ball2));
+
+        LevelGenerator levelGenerator = new LevelGenerator();
+        levelGenerator.inputCSV("level1.csv");
+        levelGenerator.generateGameObjects(manager);
+        gameObjectArrayList.addAll(levelGenerator.returnGameObjects());
+
+        game.batch.begin();
+        levelGenerator.drawGameObjects(this.game.batch);
+        game.batch.end();
+
+    }
+
+
+    public void render (float delta) {
+        if (manager.update()) {
+            Gdx.gl.glClearColor(0, 0, 0, 1);
+            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+            camera.update();
+
+            game.batch.enableBlending();
+            game.batch.setProjectionMatrix(camera.combined);
+
+            game.batch.begin();
+            rectPlayer1.draw(game.batch);
+            rectPlayer2.draw(game.batch);
+            ball1.draw(game.batch);
+            ball2.draw(game.batch);
+
+            game.batch.end();
+
+            if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+                rectPlayer2.translateX(-400 * Gdx.graphics.getDeltaTime());
+            }
+            if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+                rectPlayer2.translateX(400 * Gdx.graphics.getDeltaTime());
+            }
+            if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+                rectPlayer1.translateX(-400 * Gdx.graphics.getDeltaTime());
+            }
+            if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+                rectPlayer1.translateX(400 * Gdx.graphics.getDeltaTime());
+            }
+
+            if (rectPlayer1.getX() < 0) {
+                rectPlayer1.setPosition(0, rectPlayer1.getY());
+            }
+            if (rectPlayer1.getX() > 480 - rectPlayer1.getWidth()) {
+                rectPlayer1.setPosition(480 -rectPlayer1.getWidth(), rectPlayer1.getY());
+            }
+
+            if (rectPlayer2.getX() < 0) {
+                rectPlayer2.setPosition(0, rectPlayer2.getY());
+            }
+            if (rectPlayer2.getX() > 480 - rectPlayer2.getWidth()) {
+                rectPlayer2.setPosition(480 -rectPlayer2.getWidth(), rectPlayer2.getY());
+            }
+        }
+    }
+    public void dispose() {
+    }
+    public void show() {
+
+    }
+    public void hide() {
+
+    }
+    public void pause() {
+
+    }
+    public void resize(int sizex, int sizey) {
+
+    }
+    public void resume(){}
+
+}

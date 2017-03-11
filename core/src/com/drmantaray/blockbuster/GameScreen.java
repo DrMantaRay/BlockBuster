@@ -22,11 +22,10 @@ public class GameScreen implements Screen {
     private OrthographicCamera camera;
     private GameVaus rectPlayer1;
     private GameVaus rectPlayer2;
-    private GameBall ball1;
-    private GameBall ball2;
+    private GameObject ball1;
+    private GameObject ball2;
     private AssetManager manager;
     private boolean ballIsDropped;
-    private LevelGenerator levelGenerator;
     public GameScreen(final BlockBuster gam) {
         this.game = gam;
         gameObjectArrayList = new ArrayList<GameObject>();
@@ -47,32 +46,31 @@ public class GameScreen implements Screen {
         rectPlayer1 = new GameVaus(manager.get("rectPlayer1.png", Texture.class));
         rectPlayer1.setCenter(480 / 2 - rectPlayer1.getWidth()/4, 20);
         rectPlayer1.setAlpha((float)1);
-        rectPlayer1.color = 1;
 
         rectPlayer2 = new GameVaus(manager.get("rectPlayer2.png", Texture.class));
         rectPlayer2.setCenter(480 / 2 + rectPlayer2.getWidth()/4, 20);
         rectPlayer2.setAlpha((float) 0.5);
-        rectPlayer2.color = 2;
 
         ball1 = new GameBall(manager.get("redBall.png", Texture.class));
-        ball1.setPosition(rectPlayer1.getCenterX()-ball1.getScaledWidth()/2,
-                rectPlayer1.getY() + rectPlayer1.getHeight() + 200);
+        ball1.setPosition(rectPlayer1.getX() + rectPlayer1.getWidth() / 2 - ball1.getWidth() / 2,
+                rectPlayer1.getY() + rectPlayer1.getHeight());
         ball1.setScale(0.5f);
-        ball1.setxyVelocity(0, -400);
-        ball1.color = 1;
 
         ball2 = new GameBall(manager.get("blueBall.png", Texture.class));
         ball2.setPosition(rectPlayer2.getX() + rectPlayer2.getWidth() / 2 - ball2.getWidth() / 2,
                 rectPlayer2.getY() + rectPlayer2.getHeight());
         ball2.setScale(0.5f);
-        ball2.color = 2;
 
-        gameObjectArrayList.addAll(Arrays.asList(rectPlayer1, rectPlayer2));
+        gameObjectArrayList.addAll(Arrays.asList(rectPlayer1, rectPlayer2, ball1, ball2));
 
-        levelGenerator = new LevelGenerator();
-        levelGenerator.inputCSV("levels/level1.csv");
+        LevelGenerator levelGenerator = new LevelGenerator();
+        levelGenerator.inputCSV("level1.csv");
         levelGenerator.generateGameObjects(manager);
         gameObjectArrayList.addAll(levelGenerator.returnGameObjects());
+
+        game.batch.begin();
+        levelGenerator.drawGameObjects(this.game.batch);
+        game.batch.end();
 
     }
 
@@ -88,7 +86,6 @@ public class GameScreen implements Screen {
             game.batch.setProjectionMatrix(camera.combined);
 
             game.batch.begin();
-            levelGenerator.drawGameObjects(game.batch);
             rectPlayer1.draw(game.batch);
             rectPlayer2.draw(game.batch);
             ball1.draw(game.batch);
@@ -122,7 +119,6 @@ public class GameScreen implements Screen {
             if (rectPlayer2.getX() > 480 - rectPlayer2.getWidth()) {
                 rectPlayer2.setPosition(480 -rectPlayer2.getWidth(), rectPlayer2.getY());
             }
-            ball1.move(Gdx.graphics.getDeltaTime(),gameObjectArrayList);
         }
     }
     public void dispose() {

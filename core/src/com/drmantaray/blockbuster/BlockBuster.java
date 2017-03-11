@@ -9,12 +9,11 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class BlockBuster extends Game {
-	// declare SpriteBatch and BitmapFont
 	SpriteBatch batch;
+	Texture img;
 	BitmapFont font;
 	
 	@Override
-	//initialize SpriteBatch and BitmapFont, set Screen to GameScreen
 	public void create () {
 		batch = new SpriteBatch();
 		font = new BitmapFont();
@@ -22,7 +21,6 @@ public class BlockBuster extends Game {
 	}
 
 	@Override
-	// use render from superclass
 	public void render () {
 		super.render();
 	}

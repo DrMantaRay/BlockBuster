@@ -5,9 +5,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 
-/**
- * Created by pchen on 3/1/2017.
- */
+//Main Menu Screen. Not currently in use
 public class MainMenuScreen implements Screen {
     final BlockBuster game;
     OrthographicCamera camera;

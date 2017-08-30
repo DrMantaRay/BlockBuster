@@ -6,8 +6,9 @@ package com.drmantaray.blockbuster;
 public class GameCollision {
     public GameCollision() {
     }
+    // finds the moment right before the two objects collide
     private static float beforeCollideDelta(GameBall gameball, GameObject gameObject, float min, float max) {
-        if (max - min < 0.00001) {
+        if (max - min < 0.000001) {
             //System.out.println(min);
             return min;
         }
@@ -25,6 +26,7 @@ public class GameCollision {
         }
 
     }
+    //collision iterator
     private static boolean collidesIterator(GameBall gameball, GameObject gameObject, float min, float max) {
         float originalX = gameball.getX();
         float originalY = gameball.getY();
@@ -62,15 +64,16 @@ public class GameCollision {
         }
         return false;
     }
-    public static void collides(GameBall gameball, GameWall gamewall, float delta) {
+    //finds out if collision is in x or y direction via collidesiterator and changes gameball position
+    public static void collides(GameBall gameball, GameBlock gameBlock, float delta) {
         gameball.translate((float) -gameball.getxVelocity() * delta,
                 (float) -gameball.getyVelocity() * delta);
         double xLocation = gameball.getX();
         double yLocation = gameball.getY();
-        float newDelta = beforeCollideDelta(gameball, (GameObject) gamewall, 0, delta);
+        float newDelta = beforeCollideDelta(gameball, (GameObject) gameBlock, 0, delta);
         gameball.translate((float) gameball.getxVelocity() * newDelta,
                 (float) gameball.getyVelocity() * newDelta);
-        boolean isX = collidesIterator(gameball, gamewall, 0, delta - newDelta);
+        boolean isX = collidesIterator(gameball, gameBlock, 0, delta - newDelta);
         if (isX == true) {
             gameball.setxyVelocity(-gameball.getxVelocity(), gameball.getyVelocity());
         }
@@ -80,6 +83,7 @@ public class GameCollision {
         gameball.setPosition((float) xLocation, (float) yLocation);
 
     }
+    //finds out if collision is in x or y direction via collidesiterator and changes gameball position
     public static void collides(GameBall gameball, GameVaus gameVaus, float delta) {
         gameball.translate((float) -gameball.getxVelocity() * delta,
                 (float) -gameball.getyVelocity() * delta);
@@ -95,11 +99,11 @@ public class GameCollision {
             gameball.setxyVelocity(-gameball.getxVelocity(), gameball.getyVelocity());
         }
         else {
-            System.out.println(180*((gameVaus.getX() +gameVaus.getScaledWidth()- justBeforeCollideX)/gameVaus.getScaledWidth()));
-            System.out.println(gameVaus.getCenterX());
-            System.out.println(gameball.getCenterX());
+            //System.out.println(180*((gameVaus.getX() +gameVaus.getScaledWidth()- justBeforeCollideX)/gameVaus.getScaledWidth()));
+            //System.out.println(gameVaus.getCenterX());
+            //System.out.println(gameball.getCenterX());
             gameball.setVelocity(gameball.getVelocity(),
-                    180*((gameVaus.getX() +gameVaus.getScaledWidth()- justBeforeCollideX)/gameVaus.getScaledWidth())) ;
+                    180*((gameVaus.getX() +gameVaus.getWidth()- justBeforeCollideX)/gameVaus.getWidth())) ;
 
 
         }

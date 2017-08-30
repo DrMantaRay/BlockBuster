@@ -56,6 +56,7 @@ public class GameBall extends GameObject {
             if ((this.color == 0 || gameObject.color == 0 || gameObject.color == this.color)
                     && this.getBoundingRectangle().overlaps(gameObject.getBoundingRectangle())) {
                 possibleCollisions.add(gameObject);
+
             }
         }
         // if there are no possible collisions, return
@@ -80,6 +81,10 @@ public class GameBall extends GameObject {
             GameCollision.collides(this, (GameWall) minGameObject, delta);
         } else if (minGameObject instanceof GameVaus) {
             GameCollision.collides(this, (GameVaus) minGameObject, delta);
+        }
+        else if (minGameObject instanceof BasicBlock) {
+            GameCollision.collides(this, (BasicBlock) minGameObject, delta);
+            ((BasicBlock) minGameObject).dies(gameObjectArrayList);
         }
 
     }

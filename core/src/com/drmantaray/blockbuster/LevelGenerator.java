@@ -12,13 +12,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by pchen on 3/7/2017.
- */
+//read csv and initializes game objects
 public class LevelGenerator {
     private int size;
     private List<String[]> inFile;
-    private ArrayList<GameObject> gameObjectArrayList;
+    public ArrayList<GameObject> gameObjectArrayList;
     public LevelGenerator() {
         gameObjectArrayList = new ArrayList<GameObject>();
         size = 0;
@@ -37,12 +35,20 @@ public class LevelGenerator {
     }
     public void generateGameObjects(AssetManager assetManager) {
         GameWall tempWall;
+        BasicBlock tempBlock;
         for (String[] stringlists : inFile.subList(1, inFile.size())) {
             if (stringlists[0].equals("GameWall")) {
                 tempWall = new GameWall(assetManager.get(stringlists[4], com.badlogic.gdx.graphics.Texture.class));
-                tempWall.setPosition((float) Integer.valueOf(stringlists[1]), (float) Integer.valueOf(stringlists[2]));
                 tempWall.rotate((float) Integer.valueOf(stringlists[3]));
+                tempWall.setPosition((float) Integer.valueOf(stringlists[1]), (float) Integer.valueOf(stringlists[2]));
                 gameObjectArrayList.add(tempWall);
+                size++;
+            }
+            else if (stringlists[0].equals("BasicBlock")) {
+                tempBlock = new BasicBlock(assetManager.get(stringlists[4], com.badlogic.gdx.graphics.Texture.class));
+                tempBlock.rotate((float) Integer.valueOf(stringlists[3]));
+                tempBlock.setPosition((float) Integer.valueOf(stringlists[1]), (float) Integer.valueOf(stringlists[2]));
+                gameObjectArrayList.add(tempBlock);
                 size++;
             }
         }

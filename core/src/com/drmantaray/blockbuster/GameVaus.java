@@ -2,7 +2,7 @@ package com.drmantaray.blockbuster;
 
 import com.badlogic.gdx.graphics.Texture;
 
-//The player controlled padle class
+//The player controlled paddle class
 public class GameVaus extends GameObject {
     public double friction;
     public GameVaus(Texture texture, int height, int width) {
